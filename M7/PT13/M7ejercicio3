@@ -1,0 +1,43 @@
+Les temperatures d'un mes
+	
+
+Donat l'array amb 30 temperatures Fahrenheit màximes d'un mes de la primavera
+
+$Temperatures = array(
+
+68, 70, 72, 58, 60, 79, 82, 73, 75, 77, 73, 58, 63, 79, 78,
+
+68, 72, 73, 80, 79, 68, 72, 75, 77, 73, 78, 82, 85, 89, 83
+
+);
+
+mostrar en una pàgina web la següent informació, segons el paràmetre passat:
+
+http://localhost/.../actUF1-NF1-3.php?tipus=caluros o
+
+
+http://localhost/.../actUF1-NF1-3.php?tipus=fresc
+	
+Temperatures màximes
+
+La temperatura màxima mitjana del mes ha estat de 74 °F.
+
+Les 5 temperatures màximes més caluroses han estat:
+89 °F
+85 °F
+83 °F
+82 °F
+82 °F
+
+o
+
+Les 5 temperatures màximes més fresques han estat:
+68 °F
+63 °F
+60 °F
+58 °F
+58 °F
+Notes 	
+
+    codi ASCII per al caràcter dels graus és &deg;.
+    Es pot utilitzar les funcions round i rsort.

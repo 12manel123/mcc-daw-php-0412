@@ -1,0 +1,19 @@
+Donat el següent array:
+	
+$eu = array( "Italy"=>"Rome", "Luxembourg"=>"Luxembourg", "Belgium"=> "Brussels",
+"Denmark"=>"Copenhagen", "Finland"=>"Helsinki", "France" => "Paris", "Slovakia"=>"Bratislava",
+"Slovenia"=>"Ljubljana", "Germany" => "Berlin", "Greece" => "Athens", "Ireland"=>"Dublin",
+"Netherlands"=>"Amsterdam", "Portugal"=>"Lisbon", "Spain"=>"Madrid", "Sweden"=>"Stockholm",
+ "United Kingdom"=>"London", "Cyprus"=>"Nicosia", "Lithuania"=>"Vilnius",
+"Czech Republic"=>"Prague", "Estonia"=>"Tallin", "Hungary"=>"Budapest", "Latvia"=>"Riga",
+"Malta"=>"Valetta", "Austria" => "Vienna", "Poland"=>"Warsaw") ;
+	
+
+Crea una pàgina PHP que mostri un llistat amb el noms de les capitals i els seus corresponents països. El llistat ha de ser semblant a:
+
+La capital de Netherlands és Amsterdam
+La capital de Greece és Athens
+La capital de Germany és Berlin
+....
+
+Si se li passar a la URL el parametre ?pais=valor únicament mostrarà la capital del país demant.

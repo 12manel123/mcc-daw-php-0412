@@ -1,0 +1,108 @@
+Mostrar en una taula html la taula de multiplicar de l’1 al 10 d’un número en concret.
+
+Has de declarar una variable al principi del programa que indiqui de quin número vull fer la taula. Exemple: $numero=5;
+
+1 * 5 = 5
+
+2 * 5 = 10
+
+3 * 5 = 15
+
+4 * 5 = 20
+
+5 * 5 = 25
+
+6 * 5 = 30
+
+7 * 5 = 35
+
+8 * 5 = 40
+
+9 * 5 = 45
+
+10 * 5 = 50
+
+-------------------
+
+Les temperatures d'un mes
+	
+
+Donat l'array amb 30 temperatures Fahrenheit màximes d'un mes de la primavera
+
+$Temperatures = array(
+
+68, 70, 72, 58, 60, 79, 82, 73, 75, 77, 73, 58, 63, 79, 78,
+
+68, 72, 73, 80, 79, 68, 72, 75, 77, 73, 78, 82, 85, 89, 83
+
+);
+
+mostrar en una pàgina web la següent informació: 
+	
+ 
+
+La temperatura màxima mitjana del mes ha estat de 74 °F.
+
+Les 5 temperatures màximes més caluroses han estat:
+89 °F
+85 °F
+83 °F
+82 °F
+82 °F
+
+ 
+Notes 	
+
+    codi ASCII per al caràcter dels graus és &deg;.
+    Es pot utilitzar les funcions round per arrodonir i rsort per ordenar
+
+	
+
+Exemple round:
+	
+
+<?php
+
+echo round(3.4); // 3
+
+echo round(3.5); // 4
+
+echo round(3.6); // 4
+
+echo round(3.6, 0); // 4
+
+echo round(1.95583, 2); // 1.96
+
+echo round(1241757, -3); // 1242000
+
+echo round(5.045, 2); // 5.05
+
+echo round(5.055, 2); // 5.06
+
+?>
+
+ 
+
+Exemple ús rsort:
+	
+
+<?php
+
+$fruits = array("lemon", "orange", "banana", "apple");
+
+rsort($fruits);
+
+foreach ($fruits as $key => $val) {
+
+echo "$key = $val\n";
+
+}
+
+?>
+
+Sortida:
+
+0 = orange
+1 = lemon
+2 = banana
+3 = apple
