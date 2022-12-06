@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<form method="POST" action="index3.php"> <!--El get tambe pot ser "POST" que no es mostrara per la url-->
+	Nom: <input type="text" name="nom">
+	<br/>
+	Email: <input type="email" name="email">
+	<br/>
+	Contrasenya: <input type="text" name="password">
+	<br/>
+	Edat: <input type="text" name="edat">
+	<br/>
+	Llistar anys: 
+	<select name="any">
+		<option value="cap">----</option>
+		<option value="2021">any 2021</option>
+		<option value="2022" selected>any 2022</option>
+		<option value="2023">any 2023</option>
+	</select>
+	<br/>Vols spam?<input type="checkbox" name="spam" value="si"><br/>
+	<input type="radio" name="sexe" value="home"> Home
+	<input type="radio" name="sexe" value="dona"> Dona
+	<input type="radio" name="sexe" value="mapache"> Mapache
+	<input type="radio" name="sexe" value="aguacate"> Aguacate
+	<input type="radio" name="sexe" value="pan"> Pan
+	<br/>
+	<input type="submit" value="Enviar :D" name="boto">
+</form>
+
+</body>
+</html>
