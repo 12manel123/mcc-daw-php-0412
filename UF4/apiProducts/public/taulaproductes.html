@@ -1,0 +1,289 @@
+<html>
+<head>
+     <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+     <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+<div class="container">
+    <div id='llistat'>
+        <h2>Llistat Productes</h2>
+       
+        	<input type="number" id="preu" required>
+        	<button type="submit" id="filtrar" value="Filtrar">Filtrar</button>
+       
+        <table id="taula" class="table">
+                <th>Id</th>
+                <th>nom</th>
+                <th>Descripcio</th>
+                <th>Preu</th>            
+                <th>Operacions</th>
+        </table>
+    </div>    
+
+    
+    <div id=operarFormulari class="mt-4">
+        <label id="operacio"><h2 id="titol">Nou producte</h2></label>
+         
+
+            <form action="#" id="formulari">
+                <div class="row">
+                    <div class="col">
+                      <input type="text" value="" name="nom" placeholder="nom" id="nom">
+                    </div>
+                    <div class="col">
+                      <input type="text" value="" name="descripcio" placeholder="Descripcio" id="descripcio">
+                    </div>
+                    <div class="col">
+                        <input type="text" value="" name="preu" placeholder="preu" id="preu2">
+                    </div> 
+                </div>                          
+            </form>
+            
+            <button id="afegirbtn" class="btn btn-primary">Desar</button>       
+    </div>
+    
+
+
+    <div id="errors" class="alert alert-primary mt-4"></div>
+</div>
+
+</body>
+</html>
+
+
+<script>
+
+// adreça base on tenim operant el servei web
+var url = 'http://localhost:8000/api/products';
+var operacio="crear";
+var id=0;
+// Mètode ready: Es crida quan la pàgina s'ha carregat del tot
+$(document).ready(function(){
+
+
+    if(Cookies.get('token')==null) {
+        window.location.replace("http://localhost:8000/login.html");
+    }
+
+    // console.log(Cookies.get('token'));
+    // console.log(window.localStorage.getItem('token'));
+    
+    $.ajaxSetup({
+                beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer '+ Cookies.get('token'));
+                 }           
+    });
+
+    carregataula();  
+    // Enregistrem events:
+
+    // Quan fem click sobre el botó d'afegir un producte
+    // Executarem la funció afegirProducte
+    $('#afegirbtn').on('click',function() {   
+    	if(operacio=="crear"){
+    		afegirProducte();
+    	}
+    	else{
+            //var fila="<tr><td>"+"hola"+"</td><td>"+"hola"+"</td><td>"+"hola"+"</td><td>"+"hola"+"</td></tr>";
+            //$('#'+id).replaceWith(fila);
+
+            actualizarProducte(id);
+    		operacio="crear";
+    		document.getElementById('titol').innerHTML="Nou producte";
+			document.getElementById('nom').value="";
+            document.getElementById('descripcio').value="";
+            document.getElementById('preu2').value="";
+    	}
+    	alert(operacio);
+    });     
+
+    // Quan fem click sobre un botó de la classe 'delete'
+    // d’una de les files de la taula executarem la funció eliminarProducte
+    $('#taula').on('click','.delete',function() { 
+            // busquem el id de la fila en la que hem fet click  
+            var idr = $(this).parents('tr').attr('id');
+            // Cridem a la funció per esborrar el registre remot
+            eliminarProducte(idr);
+        });
+    $('#taula').on('click','.update',function() { 
+            document.getElementById('titol').innerHTML="Actualizar producte";
+            var padre = $(this).parents('tr');
+            id = padre.children().eq(0).text();
+            var nom = padre.children().eq(1).text();
+            var descripcio = padre.children().eq(2).text();
+            var preu = padre.children().eq(3).text();
+            document.getElementById('nom').value=nom;
+            document.getElementById('descripcio').value=descripcio;
+            document.getElementById('preu2').value=preu;
+            operacio="actaulizar";
+        });
+    $('#filtrar').on('click',function() {   
+    	carregataulafiltrada();
+        alert('Filtrant per preu.......');
+        //afegirProducte();
+    });   
+
+});
+function actualizarProducte(id){
+	alert("furula funcion"+id);
+	$.ajax({
+        url:"http://localhost:8000/api/products/"+id,
+		type: 'PUT',
+		data: $('#formulari').serialize(),
+		datatype: 'json',
+       
+        }).done( function(resposta) {
+            $("#taula").find("tr:gt(0)").remove();
+            carregataula();
+            $('#errors').text(resposta.message);
+        }).fail( function(xhr) {
+            var resposta = xhr.responseJSON;
+            $('#errors').text(resposta.message);        
+
+        });
+
+
+}
+
+
+function carregataulafiltrada(){
+	var preu = $("#preu").val();
+	$.ajax({
+        url: 'http://localhost:8000/api/products/preuInferior/'+ preu,
+        type: 'get',
+        datatype: 'json',
+        }).done( function(resposta) {
+        	$("#taula").find("tr:gt(0)").remove();
+            $('#errors').text(resposta.message);
+            $.each(resposta.data, function() {
+                        afegirFilaTaula(this); 
+            });
+
+        }).fail( function() {
+            $('#errors').text('Error: No s\'ha pogut carregar les dades.' );        
+        });
+}
+
+
+
+function carregataula(){
+    // L’objecte ajax permet fer les crides d’un servei web REST
+    // En url: posem la URI
+    // En type: posarem el tipus de mètode, GET, POST, DELETE,..
+    // En success: posarem el codi que volem executar si la resposat a la 
+    //             crida ha funcionat correctament
+    $.ajax({
+        url: url,
+        type: 'get',
+        datatype: 'json',
+        //headers: {'Authorization': 'Bearer '+ Cookies.get('token')},
+        }).done( function(resposta) {
+            $('#errors').text(resposta.message);
+            // Fem un for each per cada producte de la llista.      
+            $.each(resposta.data, function() {
+                        afegirFilaTaula(this); // L'afegim a la taula
+            });
+
+        }).fail( function() {
+
+            $('#errors').text('Error: No s\'ha pogut carregar les dades.' );        
+
+        });
+
+
+}
+
+
+
+
+function afegirFilaTaula(producte) {
+    // Afegim una fila a la taula que té l’id 'taula'
+    // Cada fila <tr> tindrà també un id, que serà igual al codi del producte
+    // Per cada fila tindrem un botó que serà de la classe 'delete'
+    var fila = "<tr id='"+ producte.id+"'>"+
+                    "<td>"+ producte.id + "</td>" +
+                    "<td>"+ producte.nom + "</td>" +
+                    "<td>"+ producte.descripcio + "</td>" +
+                    "<td>"+ producte.preu + "</td>" +
+                    "<td><button class='delete btn btn-danger' >Eliminar</button> | <button class='update btn btn-dark' >Actualizar</button></td>" +
+                "</tr>";
+    $('#taula').append(fila);
+}
+
+
+function eliminarProducte(id)
+{
+    // L’objecte ajax permet fer les crides d’un servei web REST
+    // En url: posem la URI
+    // En type: posarem el tipus de mètode, GET, POST, DELETE,..
+    // En success: posarem el codi que volem executar si la resposat a la 
+    //             crida ha funcionat correctament.
+    // En error: posem el codi en cas que la crida no hagi funcionat.
+   	    $.ajax({
+        url: url + '/' +id,
+        type: 'DELETE',
+        datatype: 'json',
+
+        }).done( function(resposta) {
+            // Eliminem la fila de la taula
+            $('#'+id).remove();
+            $('#errors').text(resposta.message);
+
+        }).fail( function(xhr) {
+            var resposta = xhr.responseJSON;
+                            
+            $('#errors').text(resposta.message);        
+
+        });
+
+
+}
+
+
+function afegirProducte() {
+    
+    // L’objecte ajax permet fer les crides d’un servei web REST
+    // En url: posem la URI
+    // En type: posarem el tipus de mètode, GET, POST, DELETE,..
+    // En success: posarem el codi que volem executar si la resposat a la 
+    //             crida ha funcionat correctament.
+    // En error: posem el codi en cas que la crida no hagi funcionat.
+
+	// Al cridar serialize() del formulari obtenim les dades que volem 
+      // enviar via POST. Sera alguna cosa semblant a 
+      //  {"nom": "llapis blau", "descripcio": "llapis", "preu": 4,5}
+
+
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: $('#formulari').serialize(),
+        datatype: 'json',
+
+        }).done( function(resposta) {
+            afegirFilaTaula(resposta.data);
+            $('#errors').text(resposta.message);
+
+        }).fail( function(xhr) {
+            var resposta = xhr.responseJSON;
+            $('#errors').text("");
+            $('#errors').append("<ul>");
+            $.each(resposta.data, function() {
+                $('#errors').append("<li>" +this+"</li>");
+                
+            });
+            $('#errors').append("</ul>");
+            // En cas d’error mostrem els errors en el <div> amb id errors.  
+
+        });
+    
+}
+
+</script>

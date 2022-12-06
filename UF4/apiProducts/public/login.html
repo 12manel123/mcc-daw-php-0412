@@ -1,0 +1,56 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+</head>
+<body>
+<h1> Login</h1>
+
+    <input type="email" name="email" id="email">
+    <input type="password" name="password" id="password">
+    <input type="button" id="loginbtn" name="submit" value="Log In">
+
+    <div id="errors"></div>
+
+</body>
+<script>
+
+ var url = 'http://localhost:8000/api/login';
+
+ $(document).ready(function(){
+ 	$('#loginbtn').on('click',function() {   
+        enviarEmailPassword();
+    });                       
+            
+ });
+
+ function enviarEmailPassword() {
+   
+    var _email      = $('#email').val();
+    var _password   = $('#password').val();
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {email:_email, password: _password},
+        datatype: 'json',
+
+        }).done( function(resposta) {
+             
+            // Opció 1: desar el token en una cookie
+            Cookies.set('token',resposta.data.token);
+            // opció 2: desar el token en el local storage
+            window.localStorage.setItem("token", resposta.data.token);
+            // redirigim a la pàgina de gestió de productes 
+            window.location.replace("http://localhost:8000/taulaproductes.html");
+
+        }).fail( function(xhr) {
+            var resposta = xhr.responseJSON;
+            $('#errors').text(resposta.message);          
+
+        });
+
+
+ }
+ </script>
+
+</html>
